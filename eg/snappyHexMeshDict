@@ -1,0 +1,130 @@
+/* snappyHexMeshDict
+ * giving an example stl surface and refinement box.
+ */
+FoamFile
+{
+  version  2.0;
+  format   ascii;
+  class    dictionary;
+  object   snappyHexMeshDict;
+}
+
+castellatedMesh  true;
+snap             true;
+addLayers        true;
+
+geometry
+{
+  stl_surface
+  {
+    type  triSurfaceMesh;
+    file  "stl_surface.stl";
+  }
+
+  refinement_box
+  {
+    type searchableBox;
+    min (-1.0 -1.0 -1.0);
+    max ( 1.0  1.0  1.0);
+  }
+};
+
+castellatedMeshControls
+{
+  locationInMesh  (0.12 0.12 0.12);
+
+  refinementSurfaces
+  {
+    stl_surface
+    {
+      level  (3 3);
+    }
+  }
+
+  refinementRegions
+  {
+    refinement_box
+    {
+      mode  inside;  // distance/inside/outside
+      levels  ((0.1 4));  // distance (ignored for in/out) and level
+    }
+  }
+
+  features
+  (
+    // edges for explicit feature refinement go here
+  );
+
+  nCellsBetweenLevels  5;
+
+  // Max cells per processor
+  maxLocalCells  1000000;
+
+  // Max cells (RAM / 4k rule of thumb)
+  maxGlobalCells  2000000;
+
+  resolveFeatureAngle  30;
+  minRefinementCells  10;
+  maxLoadUnbalance  0.10;
+  allowFreeStandingZoneFaces  true;
+}
+
+snapControls
+{
+  nSmoothPatch  3;
+  tolerance  2.0;
+  nSolveIter  30;
+  nRelaxIter  5;
+
+  // feature snapping controls
+  nFeatureSnapIter  10;
+  implicitFeatureSnap  true;
+  explicitFeatureSnap  false;
+  multiRegionFeatureSnap  false;  // only used for explicit
+}
+
+addLayersControls
+{
+  relativeSizes  true;
+
+  layers
+  {
+    stl_surface
+    {
+      nSurfaceLayers  1;
+    }
+  }
+
+  expansionRatio  1.2;
+
+  finalLayerThickness  0.3;
+  minThickness  0.1;
+
+  nGrow  0;
+  featureAngle  60;
+  slipFeatureAngle  30;
+  nRelaxIter  3;
+  nSmoothSurfaceNormals  1;
+  nSmoothNormals  3;
+  nSmoothThickness  10;
+  maxFaceThicknessRatio  0.5;
+  maxThicknessToMedialRatio  0.3;
+  minMedianAxisAngle  90;
+  nBufferCellsNoExtrude  0;
+
+  nLayerIter  50;
+}
+
+meshQualityControls
+{
+  #includeEtc "caseDicts/mesh/generation/meshQualityDict"
+}
+
+writeFlags
+(
+//scalarLevels
+//layerSets
+//layerFields
+);
+
+mergeTolerance  1e-6;
