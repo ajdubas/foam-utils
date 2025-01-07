@@ -9,7 +9,7 @@ FoamFile
   object   controlDict;
 }
 
-application  simpleFoam;
+solver  incompressibleFluid;
 
 startFrom  latestTime;
 
